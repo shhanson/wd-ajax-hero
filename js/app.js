@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    const movies = [];
+    let movies = [];
 
     const renderMovies = function() {
         $('#listings').empty();
@@ -61,14 +61,9 @@
 
     // ADD YOUR CODE HERE
 
-
-
-    //$("button").click(function(event) {
-
     $("form").submit(function(event) {
         event.preventDefault();
-        //console.log("YO BUTTON!");
-
+        movies = [];
         let $searchString = $("#search").val();
         if ($searchString !== "") {
             let $xhr = $.getJSON('http://omdbapi.com/?s=' + $searchString + "&type=movie");
@@ -81,10 +76,8 @@
 
 
                 let results = data.Search;
-                let movie = {};
-                //console.log(results);
                 for (let i = 0; i < results.length; i++) {
-                    movie = {
+                    let movie = {
                         id: results[i].imdbID,
                         poster: "",
                         title: results[i].Title,
@@ -96,26 +89,27 @@
                     }
 
                     let $xhrplot = $.getJSON('http://omdbapi.com/?t=' + movie.title + "&plot=full");
-                    $xhrplot.done(function(data){
+                    $xhrplot.done(function(data) {
                         if ($xhrplot.status !== 200) {
                             return;
                         }
 
-
                         movie.plot = data.Plot;
 
-                    });
-                    //console.log("PLOT: " + results[i].Plot);
+                        movies.push(movie);
+                        renderMovies();
+                        console.log(movie);
 
-                    movies.push(movie);
+                    });
+
                 }
 
-                renderMovies();
 
             });
         }
 
 
     });
+
 
 })();
